@@ -12,6 +12,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import webbrowser
+import unicodedata
 from datetime import datetime, timedelta, timezone
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -123,11 +124,31 @@ def candidates(config, key, defaults):
     return [*value, *defaults]
 
 
+def direction_raw_state(entity):
+    return str((entity or {}).get("state", ""))
+
+
 def normalized_direction(entity):
-    value = str((entity or {}).get("state", "")).strip().upper()
-    if value in ("IMPORT", "IMPORTING", "KØB", "KOEB"):
+    """Robust normalization of the P1 flow-direction sensor.
+
+    Home Assistant normally exposes IMPORT/EXPORT.  Some entity/state paths may
+    contain invisible Unicode/control characters, localized wording or a
+    direction icon.  Normalize those without changing the source entity.
+    """
+    raw = direction_raw_state(entity)
+    value = unicodedata.normalize("NFKC", raw).replace("\ufeff", "")
+    value = "".join(ch for ch in value if not unicodedata.category(ch).startswith("C"))
+    value = value.strip().upper()
+
+    if value in ("IMPORT", "IMPORTING", "KØB", "KOEB") or value.startswith("IMPORT"):
         return "IMPORT"
-    if value in ("EXPORT", "EXPORTING", "SALG"):
+    if value in ("EXPORT", "EXPORTING", "SALG") or value.startswith("EXPORT"):
+        return "EXPORT"
+
+    icon = str((entity or {}).get("attributes", {}).get("icon", "")).strip().lower()
+    if "transmission-tower-import" in icon or icon.endswith("-import"):
+        return "IMPORT"
+    if "transmission-tower-export" in icon or icon.endswith("-export"):
         return "EXPORT"
     return None
 
@@ -403,7 +424,7 @@ def live_payload():
     return {
         "ok":True,"source":"HOME_ASSISTANT_P1_EMMA","quality":"OK" if quality_ok else "PARTIAL",
         "timestamp":total.get("last_updated") or time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),
-        "powerW":round(power,2),"direction":direction,"phases":phases,
+        "powerW":round(power,2),"direction":direction,"directionRaw":direction_raw_state(direction_entity),"phases":phases,
         "importTodayKwh":energy_today(config,imp,used.get("import")),
         "exportTodayKwh":energy_today(config,exp,used.get("export")),
         "spotPrice":spot,

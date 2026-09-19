@@ -1,5 +1,5 @@
 name: "NECC P1 VAGT"
-version: "1.0.1"
+version: "1.0.2"
 slug: "necc_p1_vagt"
 description: "NECC P1 VAGT 0.5.3 baseline til Raspberry Pi 5 / Home Assistant"
 arch:

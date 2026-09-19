@@ -3,7 +3,7 @@
 Repository til Niller Energy Command Center på Home Assistant / Raspberry Pi 5.
 
 ## Apps
-- NECC P1 VAGT 1.0.1
+- NECC P1 VAGT 1.0.2
 
 ## Installation i Home Assistant
 1. Settings / Indstillinger -> Apps -> Install app
