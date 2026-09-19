@@ -1,0 +1,108 @@
+{
+  "home_assistant_url": "http://supervisor/core",
+  "token_file": "HA_TOKEN.txt",
+  "entities": {
+    "power": [
+      "sensor.p1_meter_effekt"
+    ],
+    "direction": [
+      "sensor.niller_energy_engine_niller_energy_p1_status"
+    ],
+    "import_today": [
+      "sensor.p1_meter_energy_import"
+    ],
+    "export_today": [
+      "sensor.p1_meter_energy_export"
+    ],
+    "price": [
+      "sensor.nord_pool_dk1_current_price"
+    ],
+    "l1_power": [
+      "sensor.p1_meter_power_phase_1"
+    ],
+    "l1_current": [],
+    "l1_voltage": [],
+    "l2_power": [
+      "sensor.p1_meter_power_phase_2"
+    ],
+    "l2_current": [],
+    "l2_voltage": [],
+    "l3_power": [
+      "sensor.p1_meter_power_phase_3"
+    ],
+    "l3_current": [],
+    "l3_voltage": [],
+    "pv_power": [
+      "sensor.emma_pv_output_power"
+    ],
+    "load_power": [
+      "sensor.emma_load_power"
+    ],
+    "battery_soc": [
+      "sensor.emma_state_of_capacity"
+    ],
+    "battery_power": [
+      "sensor.emma_battery_charge_discharge_power"
+    ]
+  },
+  "version": "0.5.3",
+  "server_port": 8791,
+  "mobile_port": 8791,
+  "optimizer_config_candidates": [
+    "/homeassistant/necc/optimizer/config/necc_optimizer.json"
+  ],
+  "prices": {
+    "supplier_markup_dkk_per_kwh": 0.015,
+    "electricity_tax_dkk_per_kwh": 0.008,
+    "energinet_system_dkk_per_kwh": 0.072,
+    "energinet_grid_dkk_per_kwh": 0.043,
+    "buy_spot_vat_mode": "auto",
+    "sell_deductions_dkk_per_kwh": 0.04,
+    "sell_spot_vat_mode": "excluded",
+    "n1_tariffs_dkk_per_kwh_including_vat": {
+      "summer_months": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "summer": {
+        "low": 0.1376,
+        "high": 0.2065,
+        "peak": 0.5368
+      },
+      "winter": {
+        "low": 0.1376,
+        "high": 0.4129,
+        "peak": 1.2388
+      }
+    },
+    "tariff_periods": {
+      "low": [
+        [
+          0,
+          6
+        ]
+      ],
+      "high": [
+        [
+          6,
+          17
+        ],
+        [
+          21,
+          24
+        ]
+      ],
+      "peak": [
+        [
+          17,
+          21
+        ]
+      ]
+    },
+    "p1_sell_settlement_deduction_dkk_per_kwh": 0.0215
+  }
+}

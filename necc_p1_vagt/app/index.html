@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#061416">
+  <title>NECC P1 VAGT · Live 0.5.3</title>
+  <link rel="stylesheet" href="styles_0_5_3.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-wrap">
+        <div class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <div>
+          <div class="eyebrow">NILLER ENERGY COMMAND CENTER</div>
+          <h1>NECC <span>P1 VAGT</span></h1>
+        </div>
+      </div>
+
+      <div class="topbar-status">
+        <div class="connection-pill demo" id="connectionPill">
+          <span class="status-dot"></span>
+          <span id="connectionLabel">LIVE · FORBINDER TIL P1</span>
+        </div>
+        <div class="clock-block">
+          <strong id="clock">--:--:--</strong>
+          <span id="dateLabel">--</span>
+        </div>
+      </div>
+    </header>
+
+    <nav class="nav-tabs" aria-label="Hovedmenu">
+      <button class="nav-tab active" data-tab="overview">NU</button>
+      <button class="nav-tab" data-tab="phases">FASER</button>
+      <button class="nav-tab" data-tab="economy">ØKONOMI</button>
+      <button class="nav-tab" data-tab="history">HISTORIK</button>
+      <button class="nav-tab" data-tab="guard">ENERGIVAGT <span class="badge" id="alertBadge">0</span></button>
+    </nav>
+
+    <main>
+      <section class="tab-panel active" id="tab-overview">
+        <div class="overview-grid">
+          <article class="hero-card glass-card">
+            <div class="card-kicker">NET LIGE NU</div>
+            <div class="power-orbit" id="powerOrbit">
+              <div class="orbit-ring orbit-ring-a"></div>
+              <div class="orbit-ring orbit-ring-b"></div>
+              <div class="orbit-core">
+                <div class="flow-icon" id="flowIcon">↓</div>
+                <div class="hero-number" id="powerValue">0,00</div>
+                <div class="hero-unit">kW</div>
+                <div class="flow-label" id="flowLabel">IMPORT</div>
+              </div>
+            </div>
+            <div class="hero-subline">
+              <span><i class="pulse-dot"></i><b id="costHour">0,00</b> kr./time</span>
+              <span>Dataalder <b id="dataAge">afventer</b></span>
+            </div>
+          </article>
+
+          <article class="summary-card glass-card">
+            <div class="card-head">
+              <div>
+                <div class="card-kicker">DAGENS ENERGI</div>
+                <h2>Økonomisk overblik</h2>
+              </div>
+              <span class="price-state" id="priceState">NORMAL</span>
+            </div>
+            <div class="summary-grid">
+              <div class="metric">
+                <span>Pris nu</span>
+                <strong><b id="priceNow">0,00</b> kr./kWh</strong>
+              </div>
+              <div class="metric">
+                <span>Købt i dag</span>
+                <strong><b id="importToday">0,00</b> kWh</strong>
+              </div>
+              <div class="metric">
+                <span>Solgt i dag</span>
+                <strong><b id="exportToday">0,00</b> kWh</strong>
+              </div>
+              <div class="metric highlight">
+                <span>Netto i dag</span>
+                <strong><b id="netCostToday">0,00</b> kr.</strong>
+              </div>
+            </div>
+            <div class="mini-chart-wrap">
+              <div class="mini-chart-head"><span>Nettoeffekt · seneste 60 målinger</span><span id="chartRange">± 0 kW</span></div>
+              <canvas id="powerChart" width="900" height="180" aria-label="Graf over nettoeffekt"></canvas>
+            </div>
+          </article>
+
+          <article class="phase-card glass-card">
+            <div class="card-head compact">
+              <div>
+                <div class="card-kicker">FASEVAGT</div>
+                <h2>Belastning pr. fase</h2>
+              </div>
+              <span class="fuse-label"><b id="fuseTop">16</b> A grænse</span>
+            </div>
+            <div class="phase-list" id="phaseListOverview"></div>
+          </article>
+
+          <article class="recommend-card glass-card" id="recommendCard">
+            <div class="recommend-icon">✓</div>
+            <div>
+              <div class="card-kicker">NECC ANBEFALING</div>
+              <h2 id="recommendTitle">Driften er normal</h2>
+              <p id="recommendText">Alle tre faser ligger inden for den indstillede belastningsgrænse.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-phases">
+        <div class="section-head">
+          <div><div class="card-kicker">FASEANALYSE</div><h2>L1 · L2 · L3 i realtid</h2></div>
+          <label class="select-label">Hovedsikring
+            <select id="fuseSelect">
+              <option value="10">10 A</option><option value="13">13 A</option>
+              <option value="16" selected>16 A</option><option value="20">20 A</option>
+              <option value="25">25 A</option><option value="35">35 A</option><option value="63">63 A</option>
+            </select>
+          </label>
+        </div>
+        <div class="phase-detail-grid" id="phaseDetailGrid"></div>
+        <article class="glass-card phase-balance-card">
+          <div><div class="card-kicker">FASEBALANCE</div><h2 id="imbalanceTitle">Beregner …</h2></div>
+          <div class="balance-meter"><span id="balanceFill"></span></div>
+          <p id="imbalanceText">Forskel mellem den mest og mindst belastede fase.</p>
+        </article>
+      </section>
+
+      <section class="tab-panel" id="tab-economy">
+        <div class="section-head">
+          <div><div class="card-kicker">ØKONOMI</div><h2>Hvad koster strømmen?</h2></div>
+          <div class="source-note" id="priceSourceNote">NECC Price Engine · automatisk</div>
+        </div>
+        <div class="economy-grid">
+          <article class="glass-card economy-total">
+            <span>Netto i dag</span>
+            <strong><b id="economyNet">0,00</b> kr.</strong>
+            <small>Intervalberegnet køb minus indtægt fra eksport</small>
+          </article>
+          <article class="glass-card price-settings price-breakdown-card">
+            <div class="card-kicker">KØBSPRIS NU · AUTOMATISK</div>
+            <div class="price-line"><span>Spotpris ekskl. moms</span><b id="pbSpot">0,000 kr.</b></div>
+            <div class="price-line"><span>Moms samlet · 25%</span><b id="pbVat">0,000 kr.</b></div>
+            <div class="price-line"><span>Vindstød tillæg · ekskl. moms</span><b id="pbSupplier">0,000 kr.</b></div>
+            <div class="price-line"><span>Elafgift · ekskl. moms</span><b id="pbTax">0,000 kr.</b></div>
+            <div class="price-line"><span>N1 nettarif · ekskl. moms <small id="pbN1Period"></small></span><b id="pbN1">0,000 kr.</b></div>
+            <div class="price-line"><span>Energinet systemtarif · ekskl. moms</span><b id="pbSystem">0,000 kr.</b></div>
+            <div class="price-line"><span>Energinet net/transmission · ekskl. moms</span><b id="pbGrid">0,000 kr.</b></div>
+            <div class="price-line total"><span>Samlet købspris</span><b id="pbTotal">0,000 kr./kWh</b></div>
+            <div class="price-line sell"><span>Aktuel salgspris · afregningsmodel</span><b id="pbSell">0,000 kr./kWh</b></div>
+          </article>
+          <article class="glass-card cost-breakdown">
+            <div class="card-kicker">DØGNREGNSKAB</div>
+            <div class="ledger-row"><span>Købt energi</span><b id="ledgerImport">0,00 kWh</b></div>
+            <div class="ledger-row"><span>Omkostning</span><b id="ledgerBuy">0,00 kr.</b></div>
+            <div class="ledger-row"><span>Solgt energi</span><b id="ledgerExport">0,00 kWh</b></div>
+            <div class="ledger-row"><span>Indtægt</span><b id="ledgerSell">0,00 kr.</b></div>
+            <div class="ledger-row total"><span>Netto</span><b id="ledgerNet">0,00 kr.</b></div>
+          </article>
+          <article class="glass-card energy-flow-card">
+            <div class="card-kicker">ENERGIFLOW LIVE</div>
+            <div class="flow-metrics">
+              <div><span>SOLPRODUKTION</span><b id="pvPowerNow">– W</b><small>EMMA PV output</small></div>
+              <div><span>HUSET BRUTTO</span><b id="housePowerNow">– W</b><small>EMMA Load power</small></div>
+              <div><span>BATTERI SOC</span><b id="batterySocNow">– %</b><small>LUNA via EMMA</small></div>
+              <div><span>BATTERI EFFEKT</span><b id="batteryPowerNow">– W</b><small>lad / aflad</small></div>
+            </div>
+            <p class="flow-note">P1 er fortsat facit for køb og salg mod nettet. EMMA/Huawei bruges til sol, huslast og batteri.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-history">
+        <div class="section-head">
+          <div><div class="card-kicker">HISTORIK & RAPPORT</div><h2>Data, der kan tages med</h2></div>
+          <div class="action-row">
+            <button class="action-btn" id="importBtn">IMPORTÉR JSON</button>
+            <button class="action-btn" id="exportCsvBtn">GEM CSV</button>
+            <button class="action-btn" id="exportJsonBtn">GEM JSON</button>
+            <button class="action-btn primary" id="printBtn">PRINT / PDF</button>
+            <input id="fileInput" type="file" accept=".json,application/json" hidden>
+          </div>
+        </div>
+        <article class="glass-card table-card">
+          <div class="table-meta"><span id="historyCount">0 målinger</span><span>Nyeste øverst · lokal prototypedata</span></div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Tid</th><th>Status</th><th>Net W</th><th>L1 A</th><th>L2 A</th><th>L3 A</th><th>Pris</th></tr></thead>
+              <tbody id="historyBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="tab-panel" id="tab-guard">
+        <div class="section-head">
+          <div><div class="card-kicker">ENERGIVAGT</div><h2>Hændelser og anbefalinger</h2></div>
+          <button class="action-btn" id="clearAlertsBtn">RYD HÆNDELSER</button>
+        </div>
+        <div class="guard-grid">
+          <article class="glass-card guard-status">
+            <div class="guard-ring" id="guardRing"><span id="guardStatusIcon">✓</span></div>
+            <div><div class="card-kicker">AKTUEL STATUS</div><h2 id="guardStatusTitle">Alt normalt</h2><p id="guardStatusText">Ingen aktive advarsler.</p></div>
+          </article>
+          <article class="glass-card alerts-card">
+            <div class="card-kicker">HÆNDELSESLOG</div>
+            <div id="alertsList" class="alerts-list"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footerbar">
+      <span>NECC P1 VAGT · LIVE 0.5.3 · PRICE AUDIT</span>
+      <span id="footerSource">Datakilde: forbinder …</span>
+      <button id="demoToggle" class="text-button">START DEMO</button>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <section class="print-report" id="printReport">
+    <header><h1>NECC P1 VAGT</h1><p>Energi- og faserapport · <span id="printTimestamp"></span></p></header>
+    <div class="print-summary">
+      <div><span>Netstatus</span><b id="printFlow">–</b></div>
+      <div><span>Aktuel effekt</span><b id="printPower">–</b></div>
+      <div><span>Netto i dag</span><b id="printCost">–</b></div>
+    </div>
+    <h2>Faseoversigt</h2>
+    <table><thead><tr><th>Fase</th><th>Effekt</th><th>Strøm</th><th>Spænding</th><th>Belastning</th></tr></thead><tbody id="printPhaseBody"></tbody></table>
+    <h2>Døgnregnskab</h2>
+    <table><tbody id="printLedger"></tbody></table>
+    <h2>Aktuel anbefaling</h2><p id="printRecommendation"></p>
+    <footer>Prototype · Data er vejledende og skal kontrolleres mod elmåler og faktura.</footer>
+  </section>
+
+  <script src="app_0_5_3.js"></script>
+</body>
+</html>

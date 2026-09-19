@@ -1,0 +1,22 @@
+name: "NECC P1 VAGT"
+version: "1.0.1"
+slug: "necc_p1_vagt"
+description: "NECC P1 VAGT 0.5.3 baseline til Raspberry Pi 5 / Home Assistant"
+arch:
+  - aarch64
+startup: application
+boot: auto
+init: false
+homeassistant_api: true
+ingress: true
+ingress_port: 8791
+panel_title: "NECC P1 VAGT"
+panel_icon: "mdi:transmission-tower"
+webui: "http://[HOST]:[PORT:8791]/"
+map:
+  - type: homeassistant_config
+    read_only: true
+ports:
+  8791/tcp: 8791
+ports_description:
+  8791/tcp: "NECC P1 VAGT LAN"
